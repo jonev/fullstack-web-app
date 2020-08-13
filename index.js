@@ -1,9 +1,13 @@
+const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const port = 3000;
+
+app.use(express.static(path.join(__dirname, "frontend/build")));
+
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost:27017/db", {
   auth: { authSource: "admin" },
@@ -33,12 +37,11 @@ app.get("/bookReviews", async (req, res) => {
   res.send(all);
 });
 
-app.post("/bookReviews", (req, res) => {
+app.post("/bookReviews", async (req, res) => {
   console.log("POST /bookReviews", req.body);
-  var review = new BookReview(req.body);
-  review.save((err, item) => {
-    res.send(item);
-  });
+  const review = new BookReview(req.body);
+  let item = await review.save();
+  res.send(item);
 });
 
 app.listen(port, () =>
