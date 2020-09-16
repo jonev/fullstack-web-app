@@ -33,7 +33,6 @@ var BookReview = mongoose.model("BookReview", bookReviewSchema);
 app.get("/bookReviews", async (req, res) => {
   console.log("GET /bookReviews");
   const all = await BookReview.find();
-  console.log(all);
   res.send(all);
 });
 
